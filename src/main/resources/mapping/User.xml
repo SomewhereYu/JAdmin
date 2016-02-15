@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.goglezon.jadmin.dao.UserDao">
+    <resultMap type="User" id="UserMap">
+        <id property="userId" column="user_id" />
+        <result property="userName" column="user_name" />
+        <result property="password" column="password" />
+        <result property="realName" column="real_name" />
+        <result property="mobile" column="mobile" />
+        <result property="email" column="email" />
+        <result property="userDesc" column="user_desc" />
+        <result property="loginTime" column="login_time" />
+        <result property="loginIp" column="login_ip" />
+        <result property="userGroup" column="user_group" />
+        <result property="template" column="template" />
+        <result property="shortcuts" column="shortcuts" />
+        <result property="showQuicknote" column="show_quicknote" />
+    </resultMap>
+
+    <select id="get" parameterType="User" resultMap="UserMap">
+        SELECT * FROM osa_user WHERE
+        <choose>
+            <when test="userId != 0">
+                user_id=#{userId}
+            </when>
+            <when test="userName!=null">
+                user_name=#{userName}
+            </when>
+        </choose>
+    </select>
+
+    <select id="getUsersByGroup" parameterType="integer" resultMap="UserMap">
+        SELECT * FROM osa_user WHERE user_group=#{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="login" parameterType="User" resultMap="UserMap">
+        SELECT * FROM osa_user WHERE user_name=#{userName} and password = #{password} and status =1
+    </select>
+
+    <insert id="insert" parameterType="User" flushCache="true">
+        insert into osa_user(user_name,password,real_name,mobile,email,user_desc,user_group) VALUES
+        (#{userName},#{password},#{realName},#{mobile},#{email},#{userDesc},#{userGroup})
+    </insert>
+
+    <update id="update" parameterType="User">
+        UPDATE osa_user
+        <set>
+            <if test="password!=null">password=#{password} ,</if>
+            <if test="realName!=null">rean_name=#{realName} ,</if>
+            <if test="mobile!=null"> mobile=#{mobile} ,</if>
+            <if test="email!=null">email=#{email} ,</if>
+            <if test="userDesc!=null">user_desc=#{userDesc} ,</if>
+            <if test="loginTime!=0">login_time=#{loginTime} ,</if>
+            <if test="status!=0"> status=#{status} ,</if>
+            <if test="userGroup!=0">user_group=#{userGroup} ,</if>
+            <if test="template!=null">template=#{template} ,</if>
+            <if test="shortcuts!=null">shortcuts=#{shortcuts} ,</if>
+            <if test="showQuicknote!=0">show_quicknote=#{showQuicknote} ,</if>
+        </set>
+        WHERE user_id=#{userId}
+    </update>
+
+    <update id="modifyUsersGroup" parameterType="Map">
+        UPDATE osa_user set user_group= #{userGroup} WHERE user_id in
+        <foreach item="userId" collection="userIds" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </update>
+
+    <delete id="delete" parameterType="User">
+        DELETE FROM osa_user WHERE user_id=#{userId}
+    </delete>
+</mapper>

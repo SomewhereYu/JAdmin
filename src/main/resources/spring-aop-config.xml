@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <bean id="serviceTimeAdvisor" class="com.goglezon.jadmin.advisor.ServiceTimeAdvisor"/>
+    <bean id="actionLogAdvisor" class="com.goglezon.jadmin.advisor.ActionLogAdvisor"/>
+    <aop:config>
+        <aop:advisor id="actionLog" advice-ref="actionLogAdvisor" pointcut="execution(* com.goglezon.jadmin.controller.*.*(..))"/>
+        <aop:advisor id="serviceTime" advice-ref="serviceTimeAdvisor" pointcut="execution(* com.goglezon.jadmin.service.*.*(..))"/>
+    </aop:config>
+
+</beans>
