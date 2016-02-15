@@ -14,7 +14,6 @@
     </context:component-scan>
 
     <context:property-placeholder location="*.properties" file-encoding="UTF-8" />
-    <mvc:annotation-driven validator="validator"/>
 
     <!-- JSON数据转码 -->
     <mvc:annotation-driven>
@@ -27,6 +26,11 @@
         </mvc:message-converters>
     </mvc:annotation-driven>
 
+    <mvc:annotation-driven validator="validator"/>
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>
+        <property name="validationMessageSource" ref="messageSource"/>
+    </bean>
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
         <property name="useCodeAsDefaultMessage" value="false"/>
         <property name="defaultEncoding" value="UTF-8" />
@@ -37,10 +41,6 @@
                 <value>classpath:ValidationMessages</value>
             </list>
         </property>
-    </bean>
-    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
-        <property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>
-        <property name="validationMessageSource" ref="messageSource"/>
     </bean>
 
     <import resource="classpath*:/spring-*-config.xml"/>
